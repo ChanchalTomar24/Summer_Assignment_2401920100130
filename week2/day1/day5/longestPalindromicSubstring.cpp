@@ -1,33 +1,38 @@
 class Solution {
 public:
-    int compress(vector<char>& chars) {
+    string longestPalindrome(string s) {
 
-        int n = chars.size();
-        int index = 0;
-        int i = 0;
+        int n = s.size();
 
-        while(i < n) {
+        if (n <= 1) return s;
 
-            char curr = chars[i];
-            int count = 0;
+        int start = 0, maxLen = 1;
 
-            while(i < n && chars[i] == curr) {
-                count++;
-                i++;
+        auto expand = [&](int left, int right) {
+
+            while (left >= 0 && right < n &&
+                   s[left] == s[right]) {
+                left--;
+                right++;
             }
 
-            chars[index++] = curr;
+            int len = right - left - 1;
 
-            if(count > 1) {
-
-                string cnt = to_string(count);
-
-                for(char c : cnt) {
-                    chars[index++] = c;
-                }
+            if (len > maxLen) {
+                maxLen = len;
+                start = left + 1;
             }
+        };
+
+        for (int i = 0; i < n; i++) {
+
+            // Odd length palindrome
+            expand(i, i);
+
+            // Even length palindrome
+            expand(i, i + 1);
         }
 
-        return index;
+        return s.substr(start, maxLen);
     }
 };
